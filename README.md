@@ -15,3 +15,5 @@ Others can contribute by helping us improve and informing us about any movie whi
 
 License:
 This project is licensed under xyz-123 and allowes users to only search  for movies, not create or edit them. If you wish to contribute please follow these guidelines.
+
+Deployed link: https://comedify.onrender.com/ping
