@@ -13,7 +13,7 @@ This website will be used for the purpose of finding movies of the genre of come
 Contributing:
 Others can contribute by helping us improve and informing us about any movie which we have missed. If the public takes an interest in our website, they can always contribute by donating money towards the betterment of the website.
 
-License:
+
 This project is licensed under xyz-123 and allowes users to only search  for movies, not create or edit them. If you wish to contribute please follow these guidelines.
 
 Deployed link: https://comedify.onrender.com/ping
