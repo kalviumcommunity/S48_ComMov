@@ -1,0 +1,17 @@
+meta {
+  name: Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/crud/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name":"Venkat"
+  }
+}

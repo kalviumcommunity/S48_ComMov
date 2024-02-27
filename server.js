@@ -1,48 +1,70 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser'); // middleware for parsing request bodies
 const app = express();
-const port = 3000;
-const { MongoClient } = require("mongodb");
-app.use(express.json())
-require("dotenv").config();
+require('dotenv').config();
+const port = process.env.PUBLIC_PORT || 3000;
 
+// Import CRUD routes
+const router = require('./routes.js');
 
+// Middleware for parsing request bodies
+app.use(bodyParser.json());
 
-app.get('/ping',(req,res) => {
-  res.send("pong")
-}
-)
+app.use("/crud",router)
 
-const uri = process.env.DATABASE_URI;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology:true,
-});
-
-
-app.get("/", async (req, res) => {
+// Connect to MongoDB
+const startDatabase = async () => {
   try {
-   
-    await client.connect();
-
-   
-    if (client.topology.isConnected()) {
-      res.json({ message: "pong", database_status: "Connected" });
-      console.log("yes");
-    } else {
-      res.json({ message: "pong", database_status: "Disconnected" });
-      console.log("no");
-    }
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-    throw err;
+    await mongoose.connect(process.env.DATABASE_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Error connecting to MongoDB:', err);
   }
+};
+
+// Disconnect from MongoDB
+const stopDatabase = async () => {
+  try {
+    await mongoose.disconnect();
+    console.log('Disconnected from MongoDB');
+  } catch (err) {
+    console.error('Error disconnecting from MongoDB:', err);
+  }
+};
+
+// Check MongoDB connection status
+const isConnected = () => {
+  return mongoose.connection.readyState === 1;
+};
+
+// Ping route to check server status
+app.get('/ping', (req, res) => {
+  res.json({
+    message: 'Server is running',
+    database: isConnected() ? 'connected' : 'disconnected',
+  });
 });
 
+// Handle shutdown signals
+process.on('SIGINT', async () => {
+  await stopDatabase();
+  process.exit(0);
+});
 
+process.on('SIGTERM', async () => {
+  await stopDatabase();
+  process.exit(0);
+});
+
+// Start the server
 if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`🚀 server running on PORT: ${port}`);
+  app.listen(port, async () => {
+    await startDatabase();
+    console.log(`Server running on PORT: ${port}`);
   });
 }
 
