@@ -1,0 +1,58 @@
+/* MovieCard.css */
+.comedify-container {
+  background-color: #EDF6F9;
+  padding: 20px;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1, h2, p, .movie-title, .movie-description {
+  color: #000000; /* Black text color */
+}
+.movie-description{
+  color: #000;
+}
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 movies in a row */
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.movie-card {
+  background-color: #669BBC; /* White background for each card */
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  padding: 20px;
+  margin-bottom: 20px; /* Add margin between cards */
+}
+
+.movie-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.movie-description {
+  margin-bottom: 8px;
+}
+
+button {
+  background-color: #000; /* Black button background */
+  color: #fff; /* White button text color */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #333; /* Darker shade of black on hover */
+}
+
+body{
+  background-color: #0D1321;
+}

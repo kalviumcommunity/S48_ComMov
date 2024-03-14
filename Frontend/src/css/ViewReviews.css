@@ -1,0 +1,48 @@
+/* ViewReviews.css */
+/* ViewReviews.css */
+
+* {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px; /* Add margin below the heading */
+  }
+  
+  .view-reviews-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .review-card {
+    background-color: #669BBC; /* White background for each card */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    padding: 20px;
+    margin-bottom: 20px; /* Add margin between cards */
+  }
+  
+  .review-card h3,
+  .review-card p {
+    text-align: center; /* Align text to center */
+    margin-bottom: 10px; /* Add margin below each element */
+  }
+  
+  .review-card button {
+    background-color: #0d1321;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px; /* Add margin to separate buttons */
+  }
+  
+  .review-card button:hover {
+    background-color: #333;
+  }
+  
+  
