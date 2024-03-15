@@ -20,9 +20,24 @@ async function Connection(){
     }
 }
 
-// Endpoint to add reviews
+// Import Joi for validation
+const Joi = require('joi');
+
+// Define Joi schema for review data validation
+const reviewSchema = Joi.object({
+    movieName: Joi.string().required(),
+    rating: Joi.number().min(0).max(10).required(),
+    review: Joi.string().required()
+});
+
+// Endpoint to add reviews with Joi validation
 app.post('/reviews', async (req, res) => {
     try {
+        const { error } = reviewSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+
         const { movieName, rating, review } = req.body;
         const newReview = new UserInput({
             movieName,
