@@ -1,12 +1,13 @@
-// HomePage.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/HomePage.css'; // Import HomePage.css for styling
+import Cookies from 'js-cookie';
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
   const [showAllMovies, setShowAllMovies] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchMovies() {
@@ -24,6 +25,14 @@ const HomePage = () => {
   const toggleShowAllMovies = () => {
     setShowAllMovies(prevState => !prevState);
   };
+
+  const handleLogout = () => {
+    // Clear existing 'user' cookie
+Cookies.remove("cookie")
+    // Navigate to login page
+    navigate('/signup');
+};
+
 
   return (
     <>
@@ -54,9 +63,15 @@ const HomePage = () => {
             <Link to="/add-review">
               <button id="add-review-button">Add Review</button>
             </Link>
+            <Link to="/signup">
+              <button id="">login</button>
+            </Link>
             <Link to="/reviews">
               <button id="view-reviews-button">View Reviews</button>
             </Link>
+            <div className="logout-container">
+              <button onClick={handleLogout} className="logout-button">Logout</button>
+            </div>
           </main>
         </div>
       </div>

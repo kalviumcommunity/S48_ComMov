@@ -6,8 +6,14 @@ require("dotenv").config();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const MovieModel = require("./models/movies.js");
-const UserInput = require("./models/user.js"); // Import UserInput model
+const SignupModel = require("./models/signup.js"); // Import Signup model
+const Joi = require('joi');
+const UserInput = require('./models/user.js');
+const Login = require('./models/login.js');
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt'); // Import bcrypt
 
+app.use(cookieParser());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,37 +26,74 @@ async function Connection(){
     }
 }
 
-// Import Joi for validation
-const Joi = require('joi');
-
-// Define Joi schema for review data validation
-const reviewSchema = Joi.object({
-    movieName: Joi.string().required(),
-    rating: Joi.number().min(0).max(10).required(),
-    review: Joi.string().required()
+// Define Joi schema for user data validation
+const userSchema = Joi.object({
+    name: Joi.string().required(),
+    username: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
 });
 
-// Endpoint to add reviews with Joi validation
-app.post('/reviews', async (req, res) => {
-    try {
-        const { error } = reviewSchema.validate(req.body);
-        if (error) {
-            return res.status(400).json({ error: error.details[0].message });
-        }
-
-        const { movieName, rating, review } = req.body;
-        const newReview = new UserInput({
-            movieName,
-            rating,
-            review
-        });
-        await newReview.save();
-        res.status(201).json({ message: 'Review added successfully' });
-    } catch (error) {
-        console.error('Error adding review:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+// Endpoint to handle user signup
+app.post('/signup', async (req, res) => {
+  try {
+    const { name, username, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new SignupModel({ // Change User to SignupModel
+      name,
+      username,
+      email,
+      password 
+    });
+    await newUser.save();
+    if (newUser){
+        res.cookie('user', name);
+    res.status(201).json({ message: 'User signed up successfully', username });
     }
+    
+  } catch (error) {
+    console.error('Error during signup:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
+
+
+
+  
+// app.post('/login', async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     const user = await Login.findOne({ username });
+//     if (user) {
+//       // Check password using bcrypt here
+//       res.cookie('user', user, { httpOnly: true });
+//       res.json({
+//           success: true,
+//           message: "Login successful",
+//           username
+//       });
+//     } else {
+//       return res.status(401).json({ error: 'Invalid credentials' });
+//     }
+//   } catch (error) {
+//     console.error('Error during login:', error);
+//     res.status(500).json({ error: 'Incorrect username or password' });
+//   }
+// });
+  
+//   const authenticateUser = (req, res, next) => {
+//     if (req.cookies.user) {
+//       next();
+//     } else {
+//       res.status(401).json({ error: 'Unauthorized' });
+//     }
+//   };
+  
+//   app.get('/protected', authenticateUser, (req, res) => {
+//     res.json({ message: 'Access granted to protected route' });
+//   });
+
 
 // Endpoint to fetch all reviews
 app.get('/reviews', async (req, res) => {
