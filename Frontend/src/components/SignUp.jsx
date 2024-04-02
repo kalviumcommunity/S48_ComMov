@@ -28,7 +28,7 @@ const SignupPage = () => {
       const response = await axios.post('http://localhost:3000/signup', formData);
       console.log('User signed up successfully');
       // Redirect to home page after successful signup
-      Cookies.set('cookie', response.data.username)
+      Cookies.set('cookie', response.data.token)
       navigate('/');
     } catch (error) {
       console.error('Error signing up:', error);

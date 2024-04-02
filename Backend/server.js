@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -47,18 +48,19 @@ app.post('/signup', async (req, res) => {
     });
     await newUser.save();
     if (newUser){
-        res.cookie('user', name);
-    res.status(201).json({ message: 'User signed up successfully', username });
+        const token = jwt.sign({ firstName: newUser.firstName }, process.env.SECRET);
+        // Encrypt the token and set it as a cookie
+        res.cookie('user', token, {
+            httpOnly: true, // Cookie cannot be accessed by JavaScript
+            secure: true // Cookie will only be sent over HTTPS
+        });
+        res.status(201).json({ message: 'User signed up successfully', username,token:token });
     }
-    
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
 
   
 // app.post('/login', async (req, res) => {
