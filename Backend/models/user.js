@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const UserInputSchema = new mongoose.Schema({
+    name: String, // Adding the user name field
     movieName: String,
     rating: Number,
     review: String

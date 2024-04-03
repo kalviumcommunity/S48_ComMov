@@ -1,5 +1,5 @@
-// ViewReviews.jsx
 import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/ViewReviews.css';
 
@@ -80,7 +80,8 @@ const ViewReviews = () => {
             </div>
           ) : (
             <div>
-              <h3>Movie: {review.movieName}</h3>
+              <h3>User: {review.name}</h3> {/* Display user's name */}
+              <h3>Movie: {review.movieName}</h3> {/* Display movie name */}
               <p>Rating: {review.rating}</p>
               <p>Review: {review.review}</p>
               <button onClick={() => handleEditReview(review._id)}>Edit</button>
@@ -89,6 +90,9 @@ const ViewReviews = () => {
           )}
         </div>
       ))}
+      <Link to="/">
+              <button id="homepage-button">Go to Home Page</button>
+            </Link>
     </div>
   );
 };

@@ -100,8 +100,9 @@ app.post('/signup', async (req, res) => {
 // Endpoint to add reviews
 app.post('/reviews', async (req, res) => {
     try {
-        const { movieName, rating, review } = req.body;
+        const { name, movieName, rating, review } = req.body; // Include the user's name
         const newReview = new UserInput({
+            name, // Save the user's name along with the review
             movieName,
             rating,
             review
@@ -113,6 +114,7 @@ app.post('/reviews', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 // Endpoint to fetch all reviews
 app.get('/reviews', async (req, res) => {
