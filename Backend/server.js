@@ -97,6 +97,23 @@ app.post('/signup', async (req, res) => {
 //   });
 
 
+// Endpoint to add reviews
+app.post('/reviews', async (req, res) => {
+    try {
+        const { movieName, rating, review } = req.body;
+        const newReview = new UserInput({
+            movieName,
+            rating,
+            review
+        });
+        await newReview.save();
+        res.status(201).json({ message: 'Review added successfully' });
+    } catch (error) {
+        console.error('Error adding review:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // Endpoint to fetch all reviews
 app.get('/reviews', async (req, res) => {
     try {
@@ -133,6 +150,7 @@ app.delete('/reviews/:id', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 // Endpoint to fetch movies
 app.get('/movies', async (req, res) => {
