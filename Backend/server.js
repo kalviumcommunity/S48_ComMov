@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -47,18 +48,19 @@ app.post('/signup', async (req, res) => {
     });
     await newUser.save();
     if (newUser){
-        res.cookie('user', name);
-    res.status(201).json({ message: 'User signed up successfully', username });
+        const token = jwt.sign({ firstName: newUser.firstName }, process.env.SECRET);
+        // Encrypt the token and set it as a cookie
+        res.cookie('user', token, {
+            httpOnly: true, // Cookie cannot be accessed by JavaScript
+            secure: true // Cookie will only be sent over HTTPS
+        });
+        res.status(201).json({ message: 'User signed up successfully', username,token:token });
     }
-    
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
-
 
   
 // app.post('/login', async (req, res) => {
@@ -93,6 +95,25 @@ app.post('/signup', async (req, res) => {
 //   app.get('/protected', authenticateUser, (req, res) => {
 //     res.json({ message: 'Access granted to protected route' });
 //   });
+
+
+// Endpoint to add reviews
+app.post('/reviews', async (req, res) => {
+    try {
+        const { name, movieName, rating, review } = req.body; // Include the user's name
+        const newReview = new UserInput({
+            name, // Save the user's name along with the review
+            movieName,
+            rating,
+            review
+        });
+        await newReview.save();
+        res.status(201).json({ message: 'Review added successfully' });
+    } catch (error) {
+        console.error('Error adding review:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 // Endpoint to fetch all reviews
@@ -132,6 +153,7 @@ app.delete('/reviews/:id', async (req, res) => {
     }
 });
 
+
 // Endpoint to fetch movies
 app.get('/movies', async (req, res) => {
     try {
@@ -143,6 +165,8 @@ app.get('/movies', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 Connection().then(() => {
     app.listen(port, () => {

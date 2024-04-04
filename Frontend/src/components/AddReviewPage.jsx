@@ -1,63 +1,68 @@
-// AddReviewPage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../css/AddReviewPage.css';
 import { useNavigate } from 'react-router-dom';
 
 const AddReviewPage = () => {
-  const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState('');
-  const [rating, setRating] = useState('');
-  const [review, setReview] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    movie: '',
+    rating: '',
+    review: ''
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const response = await axios.get('http://localhost:3000/movies');
-        setMovies(response.data);
-      } catch (error) {
-        console.error('Error fetching movies:', error);
-      }
-    }
-
-    fetchMovies();
+    // Fetch movies data or any other necessary data here if needed
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post('http://localhost:3000/reviews', {
-        movieName: selectedMovie,
-        rating,
-        review
+        name: formData.name,
+        movieName: formData.movie, // Include movieName in the request
+        rating: formData.rating,
+        review: formData.review
       });
       console.log('Review submitted successfully');
       // Clear the form after submission
-      setSelectedMovie('');
-      setRating('');
-      setReview('');
+      setFormData({
+        name: '',
+        movie: '',
+        rating: '',
+        review: ''
+      });
+      navigate('/reviews');
     } catch (error) {
       console.error('Error submitting review:', error);
     }
-    navigate('/reviews');
   };
 
   return (
     <div className="add-review-container">
       <h1>Add Review</h1>
       <form onSubmit={handleSubmit} className="add-review-form">
+        <label htmlFor="name">Name:</label>
+        <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your name" />
         <label htmlFor="movie">Movie:</label>
-        <input type="text" id="movie" value={selectedMovie} onChange={(e) => setSelectedMovie(e.target.value)} placeholder="Enter movie name" />
+        <input type="text" id="movie" name="movie" value={formData.movie} onChange={handleChange} placeholder="Enter movie name" />
         <label htmlFor="rating">Rating:</label>
-        <input type="number" id="rating" min="0" max="10" value={rating} onChange={(e) => setRating(e.target.value)} />
+        <input type="number" id="rating" min="0" max="10" name="rating" value={formData.rating} onChange={handleChange} />
         <label htmlFor="review">Review:</label>
-        <textarea id="review" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
+        <textarea id="review" name="review" value={formData.review} onChange={handleChange}></textarea>
         <button type="submit">Submit</button>
       </form>
     </div>
   );
-  
 };
 
 export default AddReviewPage;
